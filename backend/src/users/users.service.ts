@@ -5,10 +5,15 @@ import { InjectModel } from '@nestjs/mongoose';
 import { User } from './schemas/user.schema';
 import { Model } from 'mongoose';
 import bcrypt from 'bcryptjs';
+import { RolesService } from 'src/roles/roles.service';
+import { RoleNameEnum } from 'src/roles/types.role';
 
 @Injectable()
 export class UsersService {
-  constructor(@InjectModel(User.name) private userModel: Model<User>) {}
+  constructor(
+    @InjectModel(User.name) private userModel: Model<User>,
+    private roleService: RolesService,
+  ) {}
 
   getHashPassword(plainPassword: string) {
     const salt = bcrypt.genSaltSync(10);
@@ -23,11 +28,27 @@ export class UsersService {
   async create(createUserDto: CreateUserDto) {
     const { name, dob, email, password } = createUserDto;
     const hashPassword = this.getHashPassword(password);
+    const roleUser = await this.roleService.findOneByName(RoleNameEnum.USER);
     const user = await this.userModel.create({
       name,
       dob,
       email,
       password: hashPassword,
+      role: roleUser!._id,
+    });
+    return user;
+  }
+
+  async createAdmin(createUserDto: CreateUserDto) {
+    const { name, dob, email, password } = createUserDto;
+    const hashPassword = this.getHashPassword(password);
+    const roleAdmin = await this.roleService.findOneByName(RoleNameEnum.ADMIN);
+    const user = await this.userModel.create({
+      name,
+      dob,
+      email,
+      password: hashPassword,
+      role: roleAdmin!._id,
     });
     return user;
   }
@@ -43,7 +64,15 @@ export class UsersService {
   }
 
   async findOneByUsername(username: string) {
-    const user = await this.userModel.findOne({ email: username });
+    const user = await this.userModel
+      .findOne({ email: username })
+      .populate('role');
+    return user;
+  }
+
+  async findByRole(roleName: RoleNameEnum) {
+    const role = await this.roleService.findOneByName(roleName);
+    const user = await this.userModel.find({ role: role!._id });
     return user;
   }
 
