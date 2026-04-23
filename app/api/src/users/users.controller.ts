@@ -1,41 +1,65 @@
 import {
-  Controller,
-  Get,
-  Post,
   Body,
-  Patch,
-  Param,
+  Controller,
   Delete,
+  Get,
+  Param,
+  Patch,
+  Post,
 } from '@nestjs/common';
-import { UsersService } from './users.service';
+import { Actions, AppAbility, Subjects } from '@shared/casl';
+import { Request } from 'express';
+import { CheckPolicies } from 'src/decorators/customize';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { UsersService } from './users.service';
 
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @Post()
+  @CheckPolicies((ability: AppAbility) =>
+    ability.can(Actions.Create, Subjects.User),
+  )
   create(@Body() createUserDto: CreateUserDto) {
     return this.usersService.create(createUserDto);
   }
 
   @Get()
+  @CheckPolicies((ability: AppAbility) =>
+    ability.can(Actions.Read, Subjects.User),
+  )
   findAll() {
     return this.usersService.findAll();
   }
 
   @Get(':id')
+  @CheckPolicies((ability: AppAbility, request: Request) =>
+    ability.can(Actions.Read, {
+      __caslSubjectType__: Subjects.User,
+      _id: request.params.id,
+    } as any),
+  )
   findOne(@Param('id') id: string) {
     return this.usersService.findOne(id);
   }
 
   @Patch(':id')
+  @CheckPolicies((ability: AppAbility, request) =>
+    ability.can(Actions.Update, {
+      __caslSubjectType__: Subjects.User,
+      _id: request.params.id,
+    } as any),
+  )
   update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
     return this.usersService.update(id, updateUserDto);
   }
 
   @Delete(':id')
+  @CheckPolicies((ability: AppAbility) =>
+    ability.can(Actions.Delete, Subjects.User),
+  )
   remove(@Param('id') id: string) {
     return this.usersService.remove(id);
   }
