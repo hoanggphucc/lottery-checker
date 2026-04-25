@@ -9,6 +9,7 @@ import { InitDatabaseModule } from './init-database/init-database.module';
 import { RolesModule } from './roles/roles.module';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { APP_GUARD } from '@nestjs/core';
+import { HealthModule } from './health/health.module';
 
 @Module({
   imports: [
@@ -36,6 +37,7 @@ import { APP_GUARD } from '@nestjs/core';
     AuthModule,
     InitDatabaseModule,
     RolesModule,
+    HealthModule,
   ],
   controllers: [AppController],
   providers: [
