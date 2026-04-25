@@ -5,6 +5,7 @@ import { ValidationPipe } from '@nestjs/common';
 import { JwtAuthGuard } from './auth/passport/jwt-auth.guard';
 import { PoliciesGuard } from './auth/casl/policies.guard';
 import helmet from 'helmet';
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -16,6 +17,14 @@ async function bootstrap() {
   app.useGlobalGuards(new PoliciesGuard(reflector));
   app.useGlobalPipes(new ValidationPipe());
   app.use(helmet());
+
+  const config = new DocumentBuilder()
+    .setTitle('APIs Document')
+    .setDescription('Description')
+    .setVersion('1.0')
+    .build();
+  const documentFactory = () => SwaggerModule.createDocument(app, config);
+  SwaggerModule.setup('api', app, documentFactory);
 
   await app.listen(port);
 }
