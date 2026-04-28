@@ -6,7 +6,7 @@ import { User } from './schemas/user.schema';
 import { Model } from 'mongoose';
 import bcrypt from 'bcryptjs';
 import { RolesService } from 'src/roles/roles.service';
-import { RoleNameEnum } from 'src/roles/types.role';
+import { RoleNameEnum } from 'src/roles/role.type';
 
 @Injectable()
 export class UsersService {

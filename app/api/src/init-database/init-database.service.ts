@@ -1,14 +1,17 @@
 import { Injectable, OnModuleInit } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { RolesService } from 'src/roles/roles.service';
-import { RoleNameEnum } from 'src/roles/types.role';
+import { RoleNameEnum } from 'src/roles/role.type';
 import { UsersService } from 'src/users/users.service';
+import { PrizeService } from 'src/prize/prize.service';
+import { PrizeNameEnum } from 'src/prize/prize.type';
 
 @Injectable()
 export class InitDatabaseService implements OnModuleInit {
   constructor(
     private userService: UsersService,
     private roleService: RolesService,
+    private prizeService: PrizeService,
     private configService: ConfigService,
   ) {}
 
@@ -54,6 +57,18 @@ export class InitDatabaseService implements OnModuleInit {
         password: this.configService.get<string>('INIT_USER_PASSWORD') || '',
       });
       console.log(`Init database: created user...`);
+    }
+
+    //Init prize data
+    for (let prizeKey in PrizeNameEnum) {
+      const isExist = !!(await this.prizeService.findOneByName(
+        PrizeNameEnum[prizeKey],
+      ));
+      if (!isExist) {
+        console.log(`Init database: creating ${prizeKey} prize...`);
+        await this.prizeService.create({ name: PrizeNameEnum[prizeKey] });
+        console.log(`Init database: created ${prizeKey} prize...`);
+      }
     }
 
     console.log(`The module has been initialized.`);
