@@ -9,7 +9,6 @@ import {
 import { AuthService } from './auth/auth.service';
 import { LocalAuthGuard } from './auth/passport/local-auth.guard';
 import { Public } from './decorators/customize';
-import { CreateUserDto } from './users/dto/create-user.dto';
 import { LoginDto } from './auth/dto/login.dto';
 
 @Controller()
