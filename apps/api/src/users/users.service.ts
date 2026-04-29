@@ -6,6 +6,7 @@ import { User } from './schemas/user.schema';
 import { Model } from 'mongoose';
 import bcrypt from 'bcryptjs';
 import { RoleEnum } from 'src/core/types';
+import { FindUserDto } from './dto/find-user.dto';
 
 @Injectable()
 export class UsersService {
@@ -47,9 +48,24 @@ export class UsersService {
     return user;
   }
 
-  async findAll() {
-    const users = await this.userModel.find();
-    return users;
+  async findAll(findUserDto: FindUserDto) {
+    const { page, limit } = findUserDto;
+
+    const defaultLimit = +(limit || 100);
+    const defaultPage = +(page || 1);
+    const offset = (defaultPage - 1) * defaultLimit;
+    const total = (await this.userModel.find()).length;
+
+    const users = await this.userModel.find().skip(offset).limit(defaultLimit);
+
+    return {
+      result: users,
+      meta: {
+        page: defaultPage,
+        limit: defaultLimit,
+        total,
+      },
+    };
   }
 
   async findOne(id: string) {

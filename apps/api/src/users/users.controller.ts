@@ -6,6 +6,7 @@ import {
   Param,
   Patch,
   Post,
+  Query,
 } from '@nestjs/common';
 import { Actions, AppAbility, Subjects } from '@shared/casl';
 import { Request } from 'express';
@@ -13,6 +14,7 @@ import { CheckPolicies, ResponseMessage } from 'src/decorators/customize';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UsersService } from './users.service';
+import { FindUserDto } from './dto/find-user.dto';
 
 @Controller('users')
 export class UsersController {
@@ -38,8 +40,8 @@ export class UsersController {
     } as any),
   )
   @ResponseMessage('Fetch all users')
-  findAll() {
-    return this.usersService.findAll();
+  findAll(@Query() findUserDto: FindUserDto) {
+    return this.usersService.findAll(findUserDto);
   }
 
   @Get(':id')
