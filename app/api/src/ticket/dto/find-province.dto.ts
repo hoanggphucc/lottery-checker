@@ -1,5 +1,5 @@
-export class FindProvinceDto {
-  page: string;
-  limit: string;
+import { PaginationDto } from 'src/core/pagination.dto';
+
+export class FindProvinceDto extends PaginationDto {
   name: string;
 }

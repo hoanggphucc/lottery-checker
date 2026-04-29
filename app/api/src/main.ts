@@ -6,6 +6,7 @@ import { JwtAuthGuard } from './auth/passport/jwt-auth.guard';
 import { PoliciesGuard } from './auth/casl/policies.guard';
 import helmet from 'helmet';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { TransformInterceptor } from './core/transform.interceptor';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -16,6 +17,8 @@ async function bootstrap() {
   app.useGlobalGuards(new JwtAuthGuard(reflector));
   app.useGlobalGuards(new PoliciesGuard(reflector));
   app.useGlobalPipes(new ValidationPipe());
+  app.useGlobalInterceptors(new TransformInterceptor(reflector));
+
   app.use(helmet());
 
   const config = new DocumentBuilder()

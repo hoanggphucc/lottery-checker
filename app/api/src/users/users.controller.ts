@@ -9,7 +9,7 @@ import {
 } from '@nestjs/common';
 import { Actions, AppAbility, Subjects } from '@shared/casl';
 import { Request } from 'express';
-import { CheckPolicies } from 'src/decorators/customize';
+import { CheckPolicies, ResponseMessage } from 'src/decorators/customize';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UsersService } from './users.service';
@@ -22,6 +22,7 @@ export class UsersController {
   @CheckPolicies((ability: AppAbility) =>
     ability.can(Actions.Create, Subjects.User),
   )
+  @ResponseMessage('Create user')
   create(@Body() createUserDto: CreateUserDto) {
     return this.usersService.create(createUserDto);
   }
@@ -30,6 +31,7 @@ export class UsersController {
   @CheckPolicies((ability: AppAbility) =>
     ability.can(Actions.Read, Subjects.User),
   )
+  @ResponseMessage('Fetch all users')
   findAll() {
     return this.usersService.findAll();
   }
@@ -41,6 +43,7 @@ export class UsersController {
       _id: request.params.id,
     } as any),
   )
+  @ResponseMessage('Find a user')
   findOne(@Param('id') id: string) {
     return this.usersService.findOne(id);
   }
@@ -52,6 +55,7 @@ export class UsersController {
       _id: request.params.id,
     } as any),
   )
+  @ResponseMessage('Update a user')
   update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
     return this.usersService.update(id, updateUserDto);
   }
@@ -60,6 +64,7 @@ export class UsersController {
   @CheckPolicies((ability: AppAbility) =>
     ability.can(Actions.Delete, Subjects.User),
   )
+  @ResponseMessage('Delete a user')
   remove(@Param('id') id: string) {
     return this.usersService.remove(id);
   }

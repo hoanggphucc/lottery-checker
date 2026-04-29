@@ -13,6 +13,7 @@ import { FindProvinceDto } from './dto/find-province.dto';
 import { SaveTicketDto } from './dto/save-ticket.dto';
 import { UpdateTicketDto } from './dto/update-ticket.dto';
 import { Ticket } from './schemas/ticket.schema';
+import { FindTicketDto } from './dto/find-ticket.dto';
 
 @Injectable()
 export class TicketService {
@@ -82,14 +83,21 @@ export class TicketService {
 
   async findAllProvinces(findProvinceDto: FindProvinceDto) {
     const { name, page, limit } = findProvinceDto;
-    const res = await lotteryApi('/vietnam/provinces', {
+    const res: any = await lotteryApi('/vietnam/provinces', {
       params: {
         name,
         page,
         limit,
       },
     });
-    return res;
+    return {
+      result: res.data,
+      meta: {
+        page: res.meta.page,
+        limit: res.meta.limit,
+        total: res.meta.total,
+      },
+    };
   }
 
   async create(createTicketDto: CreateTicketDto, user: User) {
@@ -103,11 +111,33 @@ export class TicketService {
     return createdTicket;
   }
 
-  async findAll(user: User) {
-    const ticketList = await this.ticketModel.find({
-      user: (user as any)?._id,
-    });
-    return ticketList;
+  async findAll(findTicketDto: FindTicketDto, user: User) {
+    const { page, limit } = findTicketDto;
+
+    const defaultLimit = +(limit || 100);
+    const defaultPage = +(page || 1);
+    const offset = (defaultPage - 1) * defaultLimit;
+    const total = (
+      await this.ticketModel.find({
+        user: (user as any)?._id,
+      })
+    ).length;
+
+    const ticketList = await this.ticketModel
+      .find({
+        user: (user as any)?._id,
+      })
+      .skip(offset)
+      .limit(defaultLimit);
+
+    return {
+      result: ticketList,
+      meta: {
+        page: defaultPage,
+        limit: defaultLimit,
+        total,
+      },
+    };
   }
 
   async findOne(id: string) {
