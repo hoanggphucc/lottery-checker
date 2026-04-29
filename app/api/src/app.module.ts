@@ -6,12 +6,10 @@ import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
 import { InitDatabaseModule } from './init-database/init-database.module';
-import { RolesModule } from './roles/roles.module';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { APP_GUARD } from '@nestjs/core';
 import { HealthModule } from './health/health.module';
 import { TicketModule } from './ticket/ticket.module';
-import { PrizeModule } from './prize/prize.module';
 
 @Module({
   imports: [
@@ -38,10 +36,8 @@ import { PrizeModule } from './prize/prize.module';
     UsersModule,
     AuthModule,
     InitDatabaseModule,
-    RolesModule,
     HealthModule,
     TicketModule,
-    PrizeModule,
   ],
   controllers: [AppController],
   providers: [

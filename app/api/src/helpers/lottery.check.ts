@@ -1,4 +1,4 @@
-import { PrizeNameEnum } from 'src/prize/prize.type';
+import { PrizeEnum } from 'src/core/types';
 import { ILotteryCheck } from './lottery.type';
 
 type CheckLotteryReturn = {
@@ -13,15 +13,15 @@ export function checkLottery(
   const prizes = data.prizes;
 
   const prizeMap = {
-    db: PrizeNameEnum.JACKPOT,
-    g1: PrizeNameEnum.FIRST,
-    g2: PrizeNameEnum.SECOND,
-    g3: PrizeNameEnum.THIRD,
-    g4: PrizeNameEnum.FOURTH,
-    g5: PrizeNameEnum.FIFTH,
-    g6: PrizeNameEnum.SIXTH,
-    g7: PrizeNameEnum.SEVENTH,
-    g8: PrizeNameEnum.EIGHTH,
+    db: PrizeEnum.JACKPOT,
+    g1: PrizeEnum.FIRST,
+    g2: PrizeEnum.SECOND,
+    g3: PrizeEnum.THIRD,
+    g4: PrizeEnum.FOURTH,
+    g5: PrizeEnum.FIFTH,
+    g6: PrizeEnum.SIXTH,
+    g7: PrizeEnum.SEVENTH,
+    g8: PrizeEnum.EIGHTH,
   };
 
   const priority = {

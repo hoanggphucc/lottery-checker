@@ -3,8 +3,6 @@ import { InjectModel } from '@nestjs/mongoose';
 import moment from 'moment';
 import { Model } from 'mongoose';
 import { checkLottery } from 'src/helpers/lottery.check';
-import { PrizeService } from 'src/prize/prize.service';
-import { PrizeNameEnum } from 'src/prize/prize.type';
 import { User } from 'src/users/schemas/user.schema';
 import lotteryApi from '../helpers/lottery.api';
 import { CheckTicketDto } from './dto/check-ticket.dto';
@@ -17,10 +15,7 @@ import { FindTicketDto } from './dto/find-ticket.dto';
 
 @Injectable()
 export class TicketService {
-  constructor(
-    @InjectModel(Ticket.name) private ticketModel: Model<Ticket>,
-    private prizeService: PrizeService,
-  ) {}
+  constructor(@InjectModel(Ticket.name) private ticketModel: Model<Ticket>) {}
 
   async check(checkTicketDto: CheckTicketDto, user?: User) {
     const { ticketNumber, province, date } = checkTicketDto;
@@ -35,19 +30,14 @@ export class TicketService {
 
     if (user) {
       const isWinner = result?.length > 0;
-      const prize = isWinner
-        ? await this.prizeService.findOneByName(
-            result[0].prize as PrizeNameEnum,
-          )
-        : null;
-      const prizeId = prize?._id || '';
+      const prize = isWinner ? result[0]?.prize : '';
       const userId = (user as any)?._id as string;
       await this.saveTicket({
         ticketNumber,
         date: moment(date, 'YYYY-MM-DD').toDate(),
         province,
         isWinner,
-        prizeId: prizeId as string,
+        prize: prize || '',
         userId: userId,
       });
     }
@@ -56,7 +46,7 @@ export class TicketService {
   }
 
   async saveTicket(saveTicketDto: SaveTicketDto) {
-    const { userId, ticketNumber, date, province, isWinner, prizeId } =
+    const { userId, ticketNumber, date, province, isWinner, prize } =
       saveTicketDto;
     const ticket = await this.ticketModel.findOne({
       user: userId,
@@ -67,7 +57,7 @@ export class TicketService {
     if (ticket) {
       await this.ticketModel.updateOne(ticket._id, {
         isWinner,
-        ...(prizeId ? { prize: prizeId } : {}),
+        prize,
       });
     } else {
       await this.ticketModel.create({
@@ -75,8 +65,8 @@ export class TicketService {
         date,
         province,
         isWinner,
+        prize,
         user: userId,
-        ...(prizeId ? { prize: prizeId } : {}),
       });
     }
   }

@@ -6,7 +6,7 @@ export class SaveTicketDto extends CreateTicketDto {
   isWinner: boolean;
 
   @IsNotEmpty()
-  prizeId: string;
+  prize: string;
 
   @IsNotEmpty()
   userId: string;

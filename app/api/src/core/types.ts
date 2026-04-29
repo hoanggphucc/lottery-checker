@@ -1,4 +1,9 @@
-export enum PrizeNameEnum {
+export enum RoleEnum {
+  ADMIN = 'ADMIN',
+  USER = 'USER',
+}
+
+export enum PrizeEnum {
   JACKPOT = 'Jackpot Prize',
   FIRST = 'First Prize',
   SECOND = 'Second Prize',
