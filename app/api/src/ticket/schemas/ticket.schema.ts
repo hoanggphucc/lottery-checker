@@ -14,8 +14,8 @@ export class Ticket {
   @Prop({ required: true })
   province: string;
 
-  @Prop({ default: null })
-  isWinner: boolean | null;
+  @Prop()
+  isWinner: boolean;
 
   @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'Prize' })
   prize: mongoose.Types.ObjectId;

@@ -8,5 +8,6 @@ import { Prize, PrizeSchema } from './schemas/prize.schema';
     MongooseModule.forFeature([{ name: Prize.name, schema: PrizeSchema }]),
   ],
   providers: [PrizeService],
+  exports: [PrizeService],
 })
 export class PrizeModule {}

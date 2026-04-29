@@ -1,7 +1,15 @@
 import { PrizeNameEnum } from 'src/prize/prize.type';
 import { ILotteryCheck } from './lottery.type';
 
-export function checkLottery(ticketNumber: string, data: ILotteryCheck) {
+type CheckLotteryReturn = {
+  prize: string;
+  number: string;
+};
+
+export function checkLottery(
+  ticketNumber: string,
+  data: ILotteryCheck,
+): CheckLotteryReturn[] {
   const prizes = data.prizes;
 
   const prizeMap = {
@@ -28,7 +36,7 @@ export function checkLottery(ticketNumber: string, data: ILotteryCheck) {
     g8: 8,
   };
 
-  let matches: { prize: string; number: string; priority: number }[] = [];
+  let matches: (CheckLotteryReturn & { priority: number })[] = [];
 
   for (let key in prizes) {
     const numbers = prizes[key];
