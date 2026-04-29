@@ -11,16 +11,17 @@ export enum Actions {
 export enum Subjects {
   All = "all",
   User = "User",
+  Ticket = "Ticket",
 }
 
 export type AppAbility = MongoAbility<[Actions, Subjects]>;
 export type AppAbilityBuilder = AbilityBuilder<AppAbility>;
 
-export interface User {
+export interface IUser {
   _id: string;
   name: string;
   dob: string;
   email: string;
   password: string;
-  role: { id: string; name: string };
+  role: string;
 }

@@ -8,10 +8,12 @@ import helmet from 'helmet';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { TransformInterceptor } from './core/transform.interceptor';
 import cookieParser from 'cookie-parser';
+import { TicketService } from './ticket/ticket.service';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   const configService = app.get(ConfigService);
+  const ticketService = app.get(TicketService);
   const port = configService.get('PORT');
   const reflector = app.get(Reflector);
 
@@ -19,7 +21,7 @@ async function bootstrap() {
   app.useGlobalGuards(new JwtAuthGuard(reflector));
 
   //config policies guard
-  app.useGlobalGuards(new PoliciesGuard(reflector));
+  app.useGlobalGuards(new PoliciesGuard(reflector, ticketService));
 
   app.useGlobalPipes(new ValidationPipe());
 

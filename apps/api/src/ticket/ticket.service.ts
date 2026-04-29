@@ -55,10 +55,13 @@ export class TicketService {
       province,
     });
     if (ticket) {
-      await this.ticketModel.updateOne(ticket._id, {
-        isWinner,
-        prize,
-      });
+      await this.ticketModel.updateOne(
+        { _id: ticket._id },
+        {
+          isWinner,
+          prize,
+        },
+      );
     } else {
       await this.ticketModel.create({
         ticketNumber,
@@ -131,9 +134,11 @@ export class TicketService {
   }
 
   async findOne(id: string) {
-    const ticket = await this.ticketModel.findOne({
-      _id: id,
-    });
+    const ticket = await this.ticketModel
+      .findOne({
+        _id: id,
+      })
+      .populate('user');
     return ticket;
   }
 

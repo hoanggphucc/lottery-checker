@@ -17,8 +17,8 @@ export class Ticket {
   @Prop()
   isWinner: boolean;
 
-  @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'Prize' })
-  prize: mongoose.Types.ObjectId;
+  @Prop()
+  prize: string;
 
   @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'User' })
   user: mongoose.Types.ObjectId;

@@ -1,7 +1,7 @@
-import { User } from "../ability.types";
+import { IUser } from "../ability.types";
 
-export const isOwner = (user: User) => ({
+export const isOwner = (user: IUser) => ({
   _id: user._id,
 });
 
-export const isAdmin = (user: User) => user.role.name === "ADMIN";
+export const isAdmin = (user: IUser) => user.role === "ADMIN";

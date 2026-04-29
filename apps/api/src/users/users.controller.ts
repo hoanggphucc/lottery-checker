@@ -19,8 +19,11 @@ export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @Post()
-  @CheckPolicies((ability: AppAbility) =>
-    ability.can(Actions.Create, Subjects.User),
+  @CheckPolicies((ability: AppAbility, request: Request, moreInfo) =>
+    ability.can(Actions.Create, {
+      __caslSubjectType__: Subjects.User,
+      ...moreInfo?.user,
+    } as any),
   )
   @ResponseMessage('Create user')
   create(@Body() createUserDto: CreateUserDto) {
@@ -28,8 +31,11 @@ export class UsersController {
   }
 
   @Get()
-  @CheckPolicies((ability: AppAbility) =>
-    ability.can(Actions.Read, Subjects.User),
+  @CheckPolicies((ability: AppAbility, request: Request, moreInfo) =>
+    ability.can(Actions.Read, {
+      __caslSubjectType__: Subjects.User,
+      ...moreInfo?.user,
+    } as any),
   )
   @ResponseMessage('Fetch all users')
   findAll() {
@@ -37,10 +43,10 @@ export class UsersController {
   }
 
   @Get(':id')
-  @CheckPolicies((ability: AppAbility, request: Request) =>
+  @CheckPolicies((ability: AppAbility, request: Request, moreInfo) =>
     ability.can(Actions.Read, {
       __caslSubjectType__: Subjects.User,
-      _id: request.params.id,
+      ...moreInfo?.user,
     } as any),
   )
   @ResponseMessage('Find a user')
@@ -49,10 +55,10 @@ export class UsersController {
   }
 
   @Patch(':id')
-  @CheckPolicies((ability: AppAbility, request) =>
+  @CheckPolicies((ability: AppAbility, request: Request, moreInfo) =>
     ability.can(Actions.Update, {
       __caslSubjectType__: Subjects.User,
-      _id: request.params.id,
+      ...moreInfo?.user,
     } as any),
   )
   @ResponseMessage('Update a user')
@@ -61,8 +67,11 @@ export class UsersController {
   }
 
   @Delete(':id')
-  @CheckPolicies((ability: AppAbility) =>
-    ability.can(Actions.Delete, Subjects.User),
+  @CheckPolicies((ability: AppAbility, request: Request, moreInfo) =>
+    ability.can(Actions.Delete, {
+      __caslSubjectType__: Subjects.User,
+      ...moreInfo?.user,
+    } as any),
   )
   @ResponseMessage('Delete a user')
   remove(@Param('id') id: string) {
