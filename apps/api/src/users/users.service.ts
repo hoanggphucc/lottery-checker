@@ -58,6 +58,10 @@ export class UsersService {
 
     const users = await this.userModel.find().skip(offset).limit(defaultLimit);
 
+    await new Promise((resolve) => {
+      setTimeout(() => resolve(''), 5000);
+    });
+
     return {
       result: users,
       meta: {

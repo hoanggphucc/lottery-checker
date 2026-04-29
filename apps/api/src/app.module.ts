@@ -7,9 +7,11 @@ import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
 import { InitDatabaseModule } from './init-database/init-database.module';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
-import { APP_GUARD } from '@nestjs/core';
+import { APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
 import { HealthModule } from './health/health.module';
 import { TicketModule } from './ticket/ticket.module';
+import { CacheInterceptor, CacheModule } from '@nestjs/cache-manager';
+import KeyvRedis from '@keyv/redis';
 
 @Module({
   imports: [
@@ -33,6 +35,14 @@ import { TicketModule } from './ticket/ticket.module';
         },
       ],
     }),
+    CacheModule.registerAsync({
+      isGlobal: true,
+      useFactory: async () => {
+        return {
+          stores: [new KeyvRedis('redis://127.0.0.1:6379')],
+        };
+      },
+    }),
     UsersModule,
     AuthModule,
     InitDatabaseModule,
@@ -45,6 +55,10 @@ import { TicketModule } from './ticket/ticket.module';
     {
       provide: APP_GUARD,
       useClass: ThrottlerGuard,
+    },
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: CacheInterceptor,
     },
   ],
 })
