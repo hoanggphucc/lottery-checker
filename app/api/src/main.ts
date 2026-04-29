@@ -14,13 +14,21 @@ async function bootstrap() {
   const port = configService.get('PORT');
   const reflector = app.get(Reflector);
 
+  //config jwt guard
   app.useGlobalGuards(new JwtAuthGuard(reflector));
+
+  //config policies guard
   app.useGlobalGuards(new PoliciesGuard(reflector));
+
   app.useGlobalPipes(new ValidationPipe());
+
+  //config interceptor for response
   app.useGlobalInterceptors(new TransformInterceptor(reflector));
 
+  //config helmet
   app.use(helmet());
 
+  //config swagger
   const config = new DocumentBuilder()
     .setTitle('APIs Document')
     .setDescription('Description')
