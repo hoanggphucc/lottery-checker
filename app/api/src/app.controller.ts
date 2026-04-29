@@ -8,7 +8,7 @@ import {
 } from '@nestjs/common';
 import { AuthService } from './auth/auth.service';
 import { LocalAuthGuard } from './auth/passport/local-auth.guard';
-import { Public } from './decorators/customize';
+import { Public, ResponseMessage } from './decorators/customize';
 import { LoginDto } from './auth/dto/login.dto';
 
 @Controller()
@@ -18,11 +18,13 @@ export class AppController {
   @Public()
   @UseGuards(LocalAuthGuard)
   @Post('login')
+  @ResponseMessage('User Login')
   async login(@Request() req, @Body() loginDto: LoginDto) {
     return this.authService.login(req.user);
   }
 
   @Get('profile')
+  @ResponseMessage('Get profile')
   getProfile(@Request() req) {
     return req.user;
   }

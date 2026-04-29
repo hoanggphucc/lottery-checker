@@ -4,7 +4,7 @@ import {
   HealthCheckService,
   MongooseHealthIndicator,
 } from '@nestjs/terminus';
-import { Public } from 'src/decorators/customize';
+import { Public, ResponseMessage } from 'src/decorators/customize';
 
 @Controller('health')
 export class HealthController {
@@ -16,6 +16,7 @@ export class HealthController {
   @Get()
   @Public()
   @HealthCheck()
+  @ResponseMessage('Get health status')
   check() {
     return this.health.check([() => this.db.pingCheck('database')]);
   }
