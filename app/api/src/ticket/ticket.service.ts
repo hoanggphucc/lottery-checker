@@ -1,18 +1,18 @@
-import { SaveTicketDto } from './dto/save-ticket.dto';
 import { Injectable } from '@nestjs/common';
+import { InjectModel } from '@nestjs/mongoose';
+import moment from 'moment';
+import { Model } from 'mongoose';
 import { checkLottery } from 'src/helpers/lottery.check';
+import { PrizeService } from 'src/prize/prize.service';
+import { PrizeNameEnum } from 'src/prize/prize.type';
+import { User } from 'src/users/schemas/user.schema';
 import lotteryApi from '../helpers/lottery.api';
 import { CheckTicketDto } from './dto/check-ticket.dto';
 import { CreateTicketDto } from './dto/create-ticket.dto';
-import { UpdateTicketDto } from './dto/update-ticket.dto';
-import { Request } from 'express';
-import { InjectModel } from '@nestjs/mongoose';
-import { Ticket } from './schemas/ticket.schema';
-import { Model } from 'mongoose';
-import moment from 'moment';
-import { PrizeService } from 'src/prize/prize.service';
-import { PrizeNameEnum } from 'src/prize/prize.type';
 import { FindProvinceDto } from './dto/find-province.dto';
+import { SaveTicketDto } from './dto/save-ticket.dto';
+import { UpdateTicketDto } from './dto/update-ticket.dto';
+import { Ticket } from './schemas/ticket.schema';
 
 @Injectable()
 export class TicketService {
@@ -21,7 +21,7 @@ export class TicketService {
     private prizeService: PrizeService,
   ) {}
 
-  async check(checkTicketDto: CheckTicketDto, req?: Request) {
+  async check(checkTicketDto: CheckTicketDto, user?: User) {
     const { ticketNumber, province, date } = checkTicketDto;
     const res = await lotteryApi('/vietnam/draws', {
       params: {
@@ -32,7 +32,7 @@ export class TicketService {
     });
     const result = checkLottery(ticketNumber, res.data[0]);
 
-    if (req?.user) {
+    if (user) {
       const isWinner = result?.length > 0;
       const prize = isWinner
         ? await this.prizeService.findOneByName(
@@ -40,7 +40,7 @@ export class TicketService {
           )
         : null;
       const prizeId = prize?._id || '';
-      const userId = (req?.user as any)?._id as string;
+      const userId = (user as any)?._id as string;
       await this.saveTicket({
         ticketNumber,
         date: moment(date, 'YYYY-MM-DD').toDate(),
@@ -92,20 +92,20 @@ export class TicketService {
     return res;
   }
 
-  async create(createTicketDto: CreateTicketDto, req: Request) {
+  async create(createTicketDto: CreateTicketDto, user: User) {
     const { ticketNumber, date, province } = createTicketDto;
     const createdTicket = await this.ticketModel.create({
       ticketNumber,
       date,
       province,
-      user: (req?.user as any)?._id,
+      user: (user as any)?._id,
     });
     return createdTicket;
   }
 
-  async findAll(req: Request) {
+  async findAll(user: User) {
     const ticketList = await this.ticketModel.find({
-      user: (req?.user as any)?._id,
+      user: (user as any)?._id,
     });
     return ticketList;
   }

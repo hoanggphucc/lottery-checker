@@ -1,20 +1,19 @@
 import {
-  Controller,
-  Get,
-  Post,
   Body,
-  Patch,
-  Param,
+  Controller,
   Delete,
+  Get,
+  Param,
+  Patch,
+  Post,
   Query,
-  Request,
 } from '@nestjs/common';
-import { TicketService } from './ticket.service';
-import { CreateTicketDto } from './dto/create-ticket.dto';
-import { UpdateTicketDto } from './dto/update-ticket.dto';
+import { Public, User } from 'src/decorators/customize';
 import { CheckTicketDto } from './dto/check-ticket.dto';
-import { Public } from 'src/decorators/customize';
+import { CreateTicketDto } from './dto/create-ticket.dto';
 import { FindProvinceDto } from './dto/find-province.dto';
+import { UpdateTicketDto } from './dto/update-ticket.dto';
+import { TicketService } from './ticket.service';
 
 @Controller('tickets')
 export class TicketController {
@@ -27,8 +26,8 @@ export class TicketController {
   }
 
   @Get('/check')
-  checkTicket(@Query() checkTicketDto: CheckTicketDto, @Request() req) {
-    return this.ticketService.check(checkTicketDto, req);
+  checkTicket(@Query() checkTicketDto: CheckTicketDto, @User() user) {
+    return this.ticketService.check(checkTicketDto, user);
   }
 
   @Public()
@@ -38,13 +37,13 @@ export class TicketController {
   }
 
   @Post()
-  create(@Body() createTicketDto: CreateTicketDto, @Request() req) {
-    return this.ticketService.create(createTicketDto, req);
+  create(@Body() createTicketDto: CreateTicketDto, @User() user) {
+    return this.ticketService.create(createTicketDto, user);
   }
 
   @Get()
-  findAll(@Request() req) {
-    return this.ticketService.findAll(req);
+  findAll(@User() user) {
+    return this.ticketService.findAll(user);
   }
 
   @Get(':id')
