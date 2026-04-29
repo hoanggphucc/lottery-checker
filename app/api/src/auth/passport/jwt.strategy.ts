@@ -10,11 +10,11 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
       ignoreExpiration: false,
-      secretOrKey: configService.get<string>('JWT_SECRET') || '',
+      secretOrKey: configService.get<string>('JWT_ACCESS_TOKEN_SECRET') || '',
     });
   }
 
-  async validate(payload: Partial<User>) {
+  async validate(payload: Partial<User> & { sub: string; iss: string }) {
     return payload;
   }
 }

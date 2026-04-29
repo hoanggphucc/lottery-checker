@@ -22,7 +22,7 @@ export class User {
   role: RoleEnum;
 
   @Prop()
-  refreshToken: string;
+  refreshToken?: string;
 
   @Prop()
   createdAt: Date;

@@ -53,19 +53,23 @@ export class UsersService {
   }
 
   async findOne(id: string) {
-    const user = await this.userModel.findById(id);
+    const user = (await this.userModel.findById(id))?.toObject();
+    delete user?.refreshToken;
     return user;
   }
 
   async findOneByUsername(username: string) {
-    const user = await this.userModel
-      .findOne({ email: username })
-      .populate('role');
+    const user = await this.userModel.findOne({ email: username });
     return user;
   }
 
   async findByRole(role: RoleEnum) {
     const user = await this.userModel.find({ role });
+    return user;
+  }
+
+  async findOneByToken(token: string) {
+    const user = await this.userModel.findOne({ refreshToken: token });
     return user;
   }
 
@@ -83,6 +87,10 @@ export class UsersService {
 
   async remove(id: string) {
     await this.userModel.deleteOne({ _id: id });
-    return { success: true };
+    return 'ok';
+  }
+
+  async updateUserToken(_id: string, token: string) {
+    return await this.userModel.updateOne({ _id }, { refreshToken: token });
   }
 }

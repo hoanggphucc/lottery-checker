@@ -7,6 +7,7 @@ import { PoliciesGuard } from './auth/casl/policies.guard';
 import helmet from 'helmet';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { TransformInterceptor } from './core/transform.interceptor';
+import cookieParser from 'cookie-parser';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -31,6 +32,9 @@ async function bootstrap() {
     type: VersioningType.URI,
     defaultVersion: '1',
   });
+
+  //config cookies
+  app.use(cookieParser());
 
   //config helmet
   app.use(helmet());

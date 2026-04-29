@@ -154,6 +154,6 @@ export class TicketService {
 
   async remove(id: string) {
     await this.ticketModel.deleteOne({ _id: id });
-    return { success: true };
+    return 'ok';
   }
 }

@@ -4,12 +4,14 @@ import {
   Get,
   Post,
   Request,
+  Res,
   UseGuards,
 } from '@nestjs/common';
 import { AuthService } from './auth/auth.service';
 import { LocalAuthGuard } from './auth/passport/local-auth.guard';
-import { Public, ResponseMessage } from './decorators/customize';
+import { Cookies, Public, ResponseMessage, User } from './decorators/customize';
 import { LoginDto } from './auth/dto/login.dto';
+import type { Response } from 'express';
 
 @Controller()
 export class AppController {
@@ -17,15 +19,35 @@ export class AppController {
 
   @Public()
   @UseGuards(LocalAuthGuard)
-  @Post('login')
+  @Post('/login')
   @ResponseMessage('User Login')
-  async login(@Request() req, @Body() loginDto: LoginDto) {
-    return this.authService.login(req.user);
+  async login(
+    @User() user,
+    @Body() loginDto: LoginDto,
+    @Res({ passthrough: true }) response: Response,
+  ) {
+    return this.authService.login(user, response);
   }
 
-  @Get('profile')
-  @ResponseMessage('Get profile')
-  getProfile(@Request() req) {
-    return req.user;
+  @Get('/account')
+  @ResponseMessage('Get user information')
+  getAccount(@User() user) {
+    return this.authService.getAccount(user);
+  }
+
+  @Public()
+  @Get('/refresh')
+  @ResponseMessage('Get user by refresh token')
+  handleRefreshToken(
+    @Cookies('refresh_token') refreshToken,
+    @Res({ passthrough: true }) response: Response,
+  ) {
+    return this.authService.processNewToken(refreshToken, response);
+  }
+
+  @Post('/logout')
+  @ResponseMessage('Logout user')
+  logout(@User() user, @Res({ passthrough: true }) response: Response) {
+    return this.authService.logout(user, response);
   }
 }

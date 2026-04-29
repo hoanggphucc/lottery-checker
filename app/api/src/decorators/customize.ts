@@ -22,3 +22,10 @@ export const User = createParamDecorator(
 export const RESPONSE_MESSAGE_KEY = 'response_message';
 export const ResponseMessage = (message: string) =>
   SetMetadata(RESPONSE_MESSAGE_KEY, message);
+
+export const Cookies = createParamDecorator(
+  (data: string, ctx: ExecutionContext) => {
+    const request = ctx.switchToHttp().getRequest();
+    return data ? request.cookies?.[data] : request.cookies;
+  },
+);
