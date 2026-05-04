@@ -8,6 +8,8 @@ import {
   Post,
   Query,
 } from '@nestjs/common';
+import { Actions, AppAbility, Subjects } from '@shared/casl';
+import { Request } from 'express';
 import {
   CheckPolicies,
   Public,
@@ -17,11 +19,9 @@ import {
 import { CheckTicketDto } from './dto/check-ticket.dto';
 import { CreateTicketDto } from './dto/create-ticket.dto';
 import { FindProvinceDto } from './dto/find-province.dto';
+import { FindTicketDto } from './dto/find-ticket.dto';
 import { UpdateTicketDto } from './dto/update-ticket.dto';
 import { TicketService } from './ticket.service';
-import { FindTicketDto } from './dto/find-ticket.dto';
-import { Actions, AppAbility, Subjects } from '@shared/casl';
-import { Request } from 'express';
 
 @Controller('tickets')
 export class TicketController {

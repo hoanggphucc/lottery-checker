@@ -1,18 +1,20 @@
+import KeyvRedis from '@keyv/redis';
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
 import { MongooseModule } from '@nestjs/mongoose';
+import { ScheduleModule } from '@nestjs/schedule';
+import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
-import { UsersModule } from './users/users.module';
-import { InitDatabaseModule } from './init-database/init-database.module';
-import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
-import { APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
 import { HealthModule } from './health/health.module';
+import { InitDatabaseModule } from './init-database/init-database.module';
+import { MailModule } from './mail/mail.module';
 import { TicketModule } from './ticket/ticket.module';
+import { UsersModule } from './users/users.module';
 import { CacheInterceptor, CacheModule } from '@nestjs/cache-manager';
-import KeyvRedis from '@keyv/redis';
-import { ScheduleModule } from '@nestjs/schedule';
+import ms from 'ms';
 
 @Module({
   imports: [
@@ -37,10 +39,17 @@ import { ScheduleModule } from '@nestjs/schedule';
       ],
     }),
     CacheModule.registerAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
       isGlobal: true,
-      useFactory: async () => {
+      useFactory: async (config: ConfigService) => {
         return {
-          stores: [new KeyvRedis('redis://127.0.0.1:6379')],
+          stores: [
+            new KeyvRedis(
+              `redis://127.0.0.1:${config.get<number>('REDIS_PORT')}`,
+            ),
+          ],
+          ttl: ms(config.get<string>('REDIS_TTL')),
         };
       },
     }),
@@ -50,6 +59,7 @@ import { ScheduleModule } from '@nestjs/schedule';
     HealthModule,
     TicketModule,
     ScheduleModule.forRoot(),
+    MailModule,
   ],
   controllers: [AppController],
   providers: [
