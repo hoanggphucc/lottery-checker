@@ -13,10 +13,14 @@ import { UpdateTicketDto } from './dto/update-ticket.dto';
 import { Ticket } from './schemas/ticket.schema';
 import { FindTicketDto } from './dto/find-ticket.dto';
 import { Cron, CronExpression } from '@nestjs/schedule';
+import { MailService } from 'src/mail/mail.service';
 
 @Injectable()
 export class TicketService {
-  constructor(@InjectModel(Ticket.name) private ticketModel: Model<Ticket>) {}
+  constructor(
+    @InjectModel(Ticket.name) private ticketModel: Model<Ticket>,
+    private mailService: MailService,
+  ) {}
 
   async check(checkTicketDto: CheckTicketDto, user?: User) {
     const { ticketNumber, province, date } = checkTicketDto;
@@ -180,7 +184,7 @@ export class TicketService {
     if (tickets.length === 0) return;
 
     for (const ticket of tickets) {
-      await this.check(
+      const result = await this.check(
         {
           ticketNumber: ticket.ticketNumber,
           province: ticket.province,
@@ -188,6 +192,18 @@ export class TicketService {
         },
         ticket.user as unknown as User,
       );
+      if (result.length > 0) {
+        await this.mailService.send({
+          subject: 'Thông báo trúng thưởng',
+          template: 'win-ticket',
+          context: {
+            prize: result[0].prize,
+            ticketNumber: ticket.ticketNumber,
+            date: moment(ticket.date, 'YYYY-MM-DD').format('DD/MM/YYYY'),
+            province: ticket.province,
+          },
+        });
+      }
     }
   }
 }
