@@ -9,7 +9,7 @@ export class Ticket {
   ticketNumber: string;
 
   @Prop({ required: true })
-  date: Date;
+  date: string;
 
   @Prop({ required: true })
   province: string;

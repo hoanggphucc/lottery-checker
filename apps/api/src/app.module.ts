@@ -12,6 +12,7 @@ import { HealthModule } from './health/health.module';
 import { TicketModule } from './ticket/ticket.module';
 import { CacheInterceptor, CacheModule } from '@nestjs/cache-manager';
 import KeyvRedis from '@keyv/redis';
+import { ScheduleModule } from '@nestjs/schedule';
 
 @Module({
   imports: [
@@ -48,6 +49,7 @@ import KeyvRedis from '@keyv/redis';
     InitDatabaseModule,
     HealthModule,
     TicketModule,
+    ScheduleModule.forRoot(),
   ],
   controllers: [AppController],
   providers: [

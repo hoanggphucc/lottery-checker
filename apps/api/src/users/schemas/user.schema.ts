@@ -10,7 +10,7 @@ export class User {
   name: string;
 
   @Prop()
-  dob: Date;
+  dob: string;
 
   @Prop({ required: true })
   email: string;

@@ -1,10 +1,13 @@
-import { IsDateString, IsEmail, IsNotEmpty } from 'class-validator';
+import { IsEmail, IsNotEmpty, Matches } from 'class-validator';
 
 export class CreateUserDto {
   name: string;
 
-  @IsDateString()
-  dob: Date;
+  @IsNotEmpty()
+  @Matches(/^\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])$/, {
+    message: 'Date must be in YYYY-MM-DD format',
+  })
+  dob: string;
 
   @IsEmail()
   @IsNotEmpty()

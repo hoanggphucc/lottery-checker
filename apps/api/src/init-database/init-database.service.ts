@@ -2,6 +2,7 @@ import { Injectable, OnModuleInit } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { UsersService } from 'src/users/users.service';
 import { RoleEnum } from 'src/core/types';
+import moment from 'moment';
 
 @Injectable()
 export class InitDatabaseService implements OnModuleInit {
@@ -17,7 +18,7 @@ export class InitDatabaseService implements OnModuleInit {
       console.log(`Init database: creating admin user...`);
       await this.userService.createAdmin({
         name: 'Admin',
-        dob: new Date(),
+        dob: moment().format('YYYY-MM-DD'),
         email: this.configService.get<string>('INIT_ADMIN_EMAIL') || '',
         password: this.configService.get<string>('INIT_ADMIN_PASSWORD') || '',
       });
@@ -28,7 +29,7 @@ export class InitDatabaseService implements OnModuleInit {
       console.log(`Init database: creating user...`);
       await this.userService.create({
         name: 'User 1',
-        dob: new Date(),
+        dob: moment().format('YYYY-MM-DD'),
         email: this.configService.get<string>('INIT_USER_EMAIL') || '',
         password: this.configService.get<string>('INIT_USER_PASSWORD') || '',
       });

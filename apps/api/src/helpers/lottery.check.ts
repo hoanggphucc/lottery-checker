@@ -1,7 +1,7 @@
 import { PrizeEnum } from 'src/core/types';
 import { ILotteryCheck } from './lottery.type';
 
-type CheckLotteryReturn = {
+export type CheckLotteryReturn = {
   prize: string;
   number: string;
 };
@@ -10,6 +10,8 @@ export function checkLottery(
   ticketNumber: string,
   data: ILotteryCheck,
 ): CheckLotteryReturn[] {
+  if (!data) return [];
+
   const prizes = data.prizes;
 
   const prizeMap = {

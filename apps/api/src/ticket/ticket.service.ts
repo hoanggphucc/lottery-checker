@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import moment from 'moment';
 import { Model } from 'mongoose';
-import { checkLottery } from 'src/helpers/lottery.check';
+import { checkLottery, CheckLotteryReturn } from 'src/helpers/lottery.check';
 import { User } from 'src/users/schemas/user.schema';
 import lotteryApi from '../helpers/lottery.api';
 import { CheckTicketDto } from './dto/check-ticket.dto';
@@ -12,6 +12,7 @@ import { SaveTicketDto } from './dto/save-ticket.dto';
 import { UpdateTicketDto } from './dto/update-ticket.dto';
 import { Ticket } from './schemas/ticket.schema';
 import { FindTicketDto } from './dto/find-ticket.dto';
+import { Cron, CronExpression } from '@nestjs/schedule';
 
 @Injectable()
 export class TicketService {
@@ -29,25 +30,29 @@ export class TicketService {
     const result = checkLottery(ticketNumber, res.data[0]);
 
     if (user) {
-      const isWinner = result?.length > 0;
-      const prize = isWinner ? result[0]?.prize : '';
       const userId = (user as any)?._id as string;
-      await this.saveTicket({
-        ticketNumber,
-        date: moment(date, 'YYYY-MM-DD').toDate(),
-        province,
-        isWinner,
-        prize: prize || '',
-        userId: userId,
-      });
+      await this.saveTicket(
+        {
+          ticketNumber,
+          date,
+          province,
+        },
+        result,
+        userId,
+      );
     }
 
     return result;
   }
 
-  async saveTicket(saveTicketDto: SaveTicketDto) {
-    const { userId, ticketNumber, date, province, isWinner, prize } =
-      saveTicketDto;
+  async saveTicket(
+    saveTicketDto: SaveTicketDto,
+    result: CheckLotteryReturn[],
+    userId: string,
+  ) {
+    const { ticketNumber, date, province } = saveTicketDto;
+    const isWinner = result?.length > 0;
+    const prize = isWinner ? result[0]?.prize : '';
     const ticket = await this.ticketModel.findOne({
       user: userId,
       ticketNumber,
@@ -160,5 +165,29 @@ export class TicketService {
   async remove(id: string) {
     await this.ticketModel.deleteOne({ _id: id });
     return 'ok';
+  }
+
+  @Cron('0 45 16 * * *', {
+    timeZone: 'Asia/Ho_Chi_Minh',
+  })
+  // @Cron(CronExpression.EVERY_5_SECONDS)
+  async handleCheckTicketDaily() {
+    const tickets = await this.ticketModel
+      .find({
+        date: moment().format('YYYY-MM-DD'),
+      })
+      .populate('user');
+    if (tickets.length === 0) return;
+
+    for (const ticket of tickets) {
+      await this.check(
+        {
+          ticketNumber: ticket.ticketNumber,
+          province: ticket.province,
+          date: ticket.date,
+        },
+        ticket.user as unknown as User,
+      );
+    }
   }
 }
