@@ -41,41 +41,41 @@ export class AuthService {
       iss: 'from server',
       ...userData,
     };
-    const refreshToken = this.createRefreshToken(payload);
-    await this.usersService.updateUserToken((user as any)?._id, refreshToken);
+    const refresh_token = this.createRefreshToken(payload);
+    await this.usersService.updateUserToken((user as any)?._id, refresh_token);
     response.clearCookie('refresh_token');
-    response.cookie('refresh_token', refreshToken, {
+    response.cookie('refresh_token', refresh_token, {
       httpOnly: true,
       maxAge: ms(this.configService.get<number>('JWT_REFRESH_TOKEN_EXPIRE')),
     });
 
     return {
-      accessToken: this.jwtService.sign(payload),
-      refreshToken,
+      access_token: this.jwtService.sign(payload),
+      refresh_token,
       user: userData,
     };
   }
 
   createRefreshToken(payload: Partial<User> & { sub: string; iss: string }) {
-    const refreshToken = this.jwtService.sign(payload, {
+    const refresh_token = this.jwtService.sign(payload, {
       secret: this.configService.get<string>('JWT_REFRESH_TOKEN_SECRET'),
       expiresIn:
         ms(this.configService.get<number>('JWT_REFRESH_TOKEN_EXPIRE')) / 1000,
     });
-    return refreshToken;
+    return refresh_token;
   }
 
   async getAccount(user: User) {
     return await this.usersService.findOne((user as any)._id);
   }
 
-  async processNewToken(refreshToken: string, response: Response) {
+  async processNewToken(refresh_token: string, response: Response) {
     try {
-      this.jwtService.verify(refreshToken, {
+      this.jwtService.verify(refresh_token, {
         secret: this.configService.get<string>('JWT_REFRESH_TOKEN_SECRET'),
       });
 
-      const user = await this.usersService.findOneByToken(refreshToken);
+      const user = await this.usersService.findOneByToken(refresh_token);
       if (user) {
         return this.login(user, response);
       } else {

@@ -34,12 +34,22 @@ export class AuthController {
 
   @Public()
   @Get('/refresh')
-  @ResponseMessage('Get user by refresh token')
-  handleRefreshToken(
-    @Cookies('refresh_token') refreshToken,
+  @ResponseMessage('Get user by refresh token in cookie')
+  handleRefreshTokenInCookie(
+    @Cookies('refresh_token') refresh_token,
     @Res({ passthrough: true }) response: Response,
   ) {
-    return this.authService.processNewToken(refreshToken, response);
+    return this.authService.processNewToken(refresh_token, response);
+  }
+
+  @Public()
+  @Post('/refresh')
+  @ResponseMessage('Get user by refresh token in body')
+  handleRefreshToken(
+    @Body('refresh_token') refresh_token,
+    @Res({ passthrough: true }) response: Response,
+  ) {
+    return this.authService.processNewToken(refresh_token, response);
   }
 
   @Post('/logout')

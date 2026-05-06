@@ -76,7 +76,7 @@ export class UsersService {
     const user = (await this.userModel.findById(id))?.toObject();
     const _user = { ...user };
     delete _user?.password;
-    delete _user?.refreshToken;
+    delete _user?.refresh_token;
     return _user;
   }
 
@@ -91,7 +91,7 @@ export class UsersService {
   }
 
   async findOneByToken(token: string) {
-    const user = await this.userModel.findOne({ refreshToken: token });
+    const user = await this.userModel.findOne({ refresh_token: token });
     return user;
   }
 
@@ -113,6 +113,6 @@ export class UsersService {
   }
 
   async updateUserToken(_id: string, token: string) {
-    return await this.userModel.updateOne({ _id }, { refreshToken: token });
+    return await this.userModel.updateOne({ _id }, { refresh_token: token });
   }
 }
