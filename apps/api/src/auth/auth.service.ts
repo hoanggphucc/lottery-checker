@@ -5,6 +5,7 @@ import ms from 'ms';
 import { User } from 'src/users/schemas/user.schema';
 import { UsersService } from '../users/users.service';
 import { Response } from 'express';
+import { UpdateUserDto } from 'src/users/dto/update-user.dto';
 
 @Injectable()
 export class AuthService {
@@ -67,6 +68,10 @@ export class AuthService {
 
   async getAccount(user: User) {
     return await this.usersService.findOne((user as any)._id);
+  }
+
+  async updateAccount(user: User, updateUserDto: UpdateUserDto) {
+    return await this.usersService.update((user as any)._id, updateUserDto);
   }
 
   async processNewToken(refresh_token: string, response: Response) {

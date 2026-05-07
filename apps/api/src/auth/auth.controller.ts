@@ -1,4 +1,12 @@
-import { Body, Controller, Get, Post, Res, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Patch,
+  Post,
+  Res,
+  UseGuards,
+} from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { LocalAuthGuard } from './passport/local-auth.guard';
 import {
@@ -9,6 +17,7 @@ import {
 } from '../decorators/customize';
 import { LoginDto } from './dto/login.dto';
 import type { Response } from 'express';
+import { UpdateUserDto } from 'src/users/dto/update-user.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -30,6 +39,12 @@ export class AuthController {
   @ResponseMessage('Get user information')
   getAccount(@User() user) {
     return this.authService.getAccount(user);
+  }
+
+  @Patch('/account')
+  @ResponseMessage('Update user information')
+  updateAccount(@User() user, @Body() updateUserDto: UpdateUserDto) {
+    return this.authService.updateAccount(user, updateUserDto);
   }
 
   @Public()
