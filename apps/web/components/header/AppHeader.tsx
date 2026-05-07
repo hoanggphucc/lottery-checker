@@ -53,12 +53,16 @@ const AppHeader = () => {
                 <DropdownMenuItem>
                   <Link href={ROUTES.PROFILE}>Profile</Link>
                 </DropdownMenuItem>
-                <DropdownMenuItem>Manage Tickets</DropdownMenuItem>
+                <DropdownMenuItem>
+                  <Link href={ROUTES.TICKET}>Manage Tickets</Link>
+                </DropdownMenuItem>
               </DropdownMenuGroup>
 
               <DropdownMenuSeparator />
               <DropdownMenuGroup>
-                <DropdownMenuItem onClick={() => signOut()}>
+                <DropdownMenuItem
+                  onClick={() => signOut({ callbackUrl: ROUTES.HOME })}
+                >
                   Logout
                 </DropdownMenuItem>
               </DropdownMenuGroup>

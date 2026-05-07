@@ -60,4 +60,17 @@ declare global {
     prize: string;
     number: string;
   }
+
+  interface ITicket {
+    _id: string;
+    ticketNumber: string;
+    date: string;
+    province: string;
+    isWinner: boolean;
+    prize: string;
+    user: string;
+    createdAt: string;
+    updatedAt: string;
+    __v: number;
+  }
 }

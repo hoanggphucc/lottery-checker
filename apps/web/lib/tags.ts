@@ -1,3 +1,4 @@
 export const TAGS = {
-  GET_PROFILE: "GET_PROFILE",
+  PROFILE: "PROFILE",
+  TICKET: "TICKET",
 };

@@ -56,7 +56,7 @@ export async function handleSaveProfile(
     },
   });
 
-  revalidateTag(TAGS.GET_PROFILE, "max");
+  revalidateTag(TAGS.PROFILE, "max");
 
   return res;
 }
