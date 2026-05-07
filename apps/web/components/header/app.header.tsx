@@ -1,9 +1,9 @@
 "use client";
 
 import Image from "next/image";
-import LoginButton from "../login.button";
+import LoginButton from "@/components/auth/LoginButton";
 import { useSession } from "next-auth/react";
-import LogoutButton from "../logout.button";
+import LogoutButton from "@/components/auth/LogoutButton";
 
 const AppHeader = () => {
   const { data: session } = useSession();
