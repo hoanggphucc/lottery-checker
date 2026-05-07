@@ -1,4 +1,4 @@
-import CheckTicket from "@/components/home/CheckTicket";
+import CheckTicketForm from "@/components/home/CheckTicketForm";
 import { sendRequest } from "@/utils/api";
 
 export default async function HomePage() {
@@ -12,8 +12,8 @@ export default async function HomePage() {
   });
 
   return (
-    <div className="flex justify-center">
-      <CheckTicket provinces={res?.data?.result || []} />
+    <div className="Home">
+      <CheckTicketForm provinces={res?.data?.result || []} />
     </div>
   );
 }

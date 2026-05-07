@@ -28,6 +28,14 @@ declare global {
     result: T[];
   }
 
+  interface IUser {
+    _id: string;
+    name: string;
+    email: string;
+    dob: string;
+    role: string;
+  }
+
   interface IProvince {
     id: number;
     regionId: number;

@@ -8,7 +8,9 @@ export default function Layout({
   return (
     <>
       <AppHeader />
-      <div className="px-2">{children}</div>
+      <div className="px-2 py-4 flex justify-center">
+        <div className="w-full max-w-[500px]">{children}</div>
+      </div>
     </>
   );
 }

@@ -33,7 +33,7 @@ const formSchema = z.object({
     .length(6, "Must be 6 numbers"),
 });
 
-const CheckTicket: React.FC<Props> = ({ provinces }) => {
+const CheckTicketForm: React.FC<Props> = ({ provinces }) => {
   const [results, setResults] = useState<ICheckTicketResult[] | null>(null);
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -58,7 +58,7 @@ const CheckTicket: React.FC<Props> = ({ provinces }) => {
   }
 
   return (
-    <div className="w-full max-w-[500px]">
+    <>
       <form id="form-check-ticket" onSubmit={form.handleSubmit(onSubmit)}>
         <FieldGroup>
           <div className="flex gap-4">
@@ -149,8 +149,8 @@ const CheckTicket: React.FC<Props> = ({ provinces }) => {
             : `You didn’t win any prize`}
         </p>
       )}
-    </div>
+    </>
   );
 };
 
-export default CheckTicket;
+export default CheckTicketForm;
