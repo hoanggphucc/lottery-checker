@@ -55,11 +55,8 @@ export class TicketController {
 
   @Get()
   @ResponseMessage('Fetch all tickets')
-  @CheckPolicies((ability: AppAbility, request: Request, moreInfo) =>
-    ability.can(Actions.Read, {
-      __caslSubjectType__: Subjects.Ticket,
-      ...moreInfo?.ticket,
-    } as any),
+  @CheckPolicies((ability: AppAbility) =>
+    ability.can(Actions.Read, Subjects.Ticket),
   )
   findAll(@Query() findTicketDto: FindTicketDto, @User() user) {
     return this.ticketService.findAll(findTicketDto, user);
