@@ -27,4 +27,29 @@ declare global {
     };
     result: T[];
   }
+
+  interface IProvince {
+    id: number;
+    regionId: number;
+    code: string;
+    name: string;
+    schedule: any;
+    region: {
+      id: number;
+      code: string;
+      name: string;
+      description: string;
+    };
+  }
+
+  interface ICheckTicketDto {
+    province: string;
+    date: string;
+    ticketNumber;
+  }
+
+  interface ICheckTicketResult {
+    prize: string;
+    number: string;
+  }
 }
