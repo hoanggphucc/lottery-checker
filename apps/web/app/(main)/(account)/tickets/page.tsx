@@ -1,5 +1,6 @@
 import authOptions from "@/app/api/auth/auth.options";
 import TicketList from "@/components/ticket/TicketList";
+import { TAGS } from "@/lib/tags";
 import { sendRequest } from "@/utils/api";
 import { getServerSession } from "next-auth";
 
@@ -25,7 +26,7 @@ export default async function TicketPage(props: {
       limit,
     },
     nextOption: {
-      cache: "no-store",
+      next: { tags: [TAGS.TICKET] },
     },
   });
 
